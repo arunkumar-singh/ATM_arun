@@ -1,0 +1,3 @@
+The main file is incremental_main_11.0.py.
+
+It calls all the other files. For animation, the package drawnow needs to be installed. Can be done through pip install drawnow
