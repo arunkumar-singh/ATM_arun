@@ -1,0 +1,489 @@
+\documentclass[letterpaper, 10 pt, conference]{IEEEtran}  % Comment this line out if you need a4paper
+
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\IEEEoverridecommandlockouts                              % This command is only needed if 
+                                                          % you want to use the \thanks command
+
+%\overrideIEEEmargins                                      % Needed to meet printer requirements.
+
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+% The following packages can be found on http:\\www.ctan.org
+%\usepackage{graphics} % for pdf, bitmapped graphics files
+%\usepackage{epsfig} % for postscript graphics files
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+%\usepackage{amsmath} % assumes amsmath package installed
+%\usepackage{amssymb}  % assumes amsmath package installed
+
+
+\usepackage{graphics} % for pdf, bitmapped graphics files
+\usepackage{epsfig} % for postscript graphics files
+\usepackage{subfigure}
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+\usepackage{amsmath} % assumes amsmath package installed
+%\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\usepackage{lipsum,amsmath,multicol}
+\usepackage{float}
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{algpseudocode}
+%\usepackage[font=scriptsize,skip=0.5pt]{caption} 
+
+\title{\LARGE \bf
+Air Traffic Conflict Resolution through Local Collision Avoidance 
+}
+
+
+\author{Arun Kumar Singh $^1$, Cuong Pham $^1$% <-this % stops a space
+%\thanks{*This work was not supported by any organization}% <-this % stops a space
+\thanks{Mechanical and Aerospace Engineering, NTU, Singapore     
+        {\tt\small
+ aksingh@ntu.edu.sg,   cuong@ntu.edu.sg}
+The research was partially ATMRI, NTU, Singapore}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+%\setlength{\parskip}{0pt}
+%\setlength{\parsep}{0pt}
+%\setlength{\headsep}{0pt}
+%\setlength{\topskip}{0pt}
+%\setlength{\topmargin}{0pt}
+%\setlength{\topsep}{0pt}
+%\setlength{\partopsep}{0pt}
+
+\begin{document}
+
+
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+The volume of air traffic has increased in leaps and bounds over the past decade resulting in increase in the number of conflicts detected en-route. This has significantly increased the cognitive load of the Air Traffic Control (ATC) workers and necessitated development of automatic conflict resolution algorithms. In this paper, we solve the problem of conflict resolution through the application of multi-robot collision avoidance algorithms. The contribution of the proposed work lies in efficient adaptation of velocity obstacle/collision cone based  algorithms to handle highly constrained motions of fixed wing aerial vehicles. 
+
+The crux of the proposed methodology lies in our recently developed  concept of \emph{time scaled collision cone} constraints which provide closed form formulae for characterizing collision free velocities that the robot can achieve by just changing the time scale of the current trajectory. Evaluating these formulae over multiple candidate paths give a good characterization of the complete solution space of kino-dynamically feasible collision free velocities. This abstraction reduces collision avoidance to choosing a path and an appropriate time scale for it. 
+
+In this paper, we extend the concept of \emph{time scaled collision cone} to multiple decision making robots by formulating it over the joint state space of all the robots. We present novel convexification schemes for reducing \emph{time scaled collision cone} over joint state space to set of linear inequalities. This in turn allows the joint formulation to scale efficiently with the number of robots. Finally, we present some hueristics for choosing paths along which \emph{time scaled collision cone} has good solution space. We validate our formulation on practical air traffic conflict scenarios.
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%Navigating multiple non-holonomic robots is a challenging problem as it requires repeatedly computing over a short horizon, the intersection space of non-convex robot dynamics and collision avoidance constraints. Enforcement of velocity/acceleration continuity and inclusion of additional state and control dependent constraints such as curvature and acceleration bounds further increases the complexity of the problem. In this paper, we present a novel approach for characterizing the solution space of kino-dynamically feasible collision free velocities and consequently computing a locally optimal trajectory connecting the current state to the collision free state, subject to arbitrary state and control dependent constraints. The advantage of the proposed approach is that its complexity depends minimally on the  kino-dynamics of the specific robot, thus making it easily scalable to different robotic systems like quadrotors and fixed wing aerial vehicles.
+%
+%The foundation of the approach is built upon our recently developed  concept of \emph{time scaled collision cone} constraints which provide closed form formulae for characterizing collision free velocities that the robot can achieve by just changing the time scale of the current trajectory. Evaluating these formulae over multiple candidate paths give a good characterization of the complete solution space of kino-dynamically feasible collision free velocities. This abstraction reduces collision avoidance to choosing a path and an appropriate time scale for it.
+%
+%
+%In this paper, we extend the concept of \emph{time scaled collision cone} to multiple decision making robots by formulating it over the joint state space of all the robots. We present several convexification schemes for reducing \emph{time scaled collision cone} over joint state space to set of linear inequalities. This in turn allows the joint formulation to scale efficiently with the number of robots. Finally, we present a novel path optimization framework which produces paths along which \emph{time scaled collision cone} constraints have good solution space. We validate our formulation on benchmark cases from air traffic conflict resolution and autonomous intersection management.
+
+%We propose some key extensions to our earlier works on \emph{time scaled collision cone}. These include extending it from "single robot-multiple non-responsive dynamic obstacle" case to the domain of multiple decision making robots and augmenting it with a path optimization framework which produces such paths along which \emph{time scaled collision cone} has good solution space. 
+
+
+
+
+% which provides a time scaling based decomposition of dynamic collision avoidance constraints eventually leading to closed form characterization of collision free velocities available to a robot moving along multiple non responsive obstacles. In this paper, we extend the concept of \emph{time scaled collision cone} to multiple decision making robots by formulating it over the joint state space of all the robots.
+
+
+%The volume of air traffic has increased in leaps and bounds over the past decade resulting in increase in the number of conflicts detected en-route. This has significantly increased the cognitive load of the Air Traffic Control (ATC) workers and necessitated development of automatic conflict resolution algorithms. With this motivation, in this paper, we propose a centralized, local multi-agent collision avoidance based air traffic conflict resolution framework. The collision avoidance consists of computing at each instant, locally optimal collision free velocities, while respecting constraints posed by robot dynamics, state and actuator bounds.
+%
+%
+%% conflict resolution framework based on incremental, optimization based multi robot motion planning. The planner operates by sequentially computing locally optimal collision free velocities, while respecting constraints posed by robot dynamics, state and actuator bounds.
+%
+%The computational efficiency of the optimization is ensured by a novel approach for characterizing space of kino-dynamically feasible, collision free velocities and subsequently choosing a locally optimal velocity from it. The foundation of the approach is built upon our recently developed  concept of \emph{time scaled collision cone} which provides closed form formulae for characterizing collision free velocities that the robot can achieve by just changing the time scale of the current trajectory. Evaluating these formulae over multiple candidate paths give a good characterization of the complete solution space. Thus, the problem of computing a locally optimal collision free velocity can be reduced to a hierarchical optimization of computing an optimal path and an optimal time scale for it. We show that both the layers of hierarchical optimization can be computed efficiently in centralized manner for tens of robots. We validate our formulation on benchmark test  cases from air traffic conflict resolution and autonomous intersection management.
+
+
+
+
+
+
+
+
+
+%The foundation of this approach lies
+%
+%
+%characterization of the intersection space of robot dynamics and multi robot collision avoidance constraints. The foundation of which, is built upon our recently developed  concept of \emph{time scaled collision cone}, which provides closed form formulae for characterizing collision free velocities that the robot can achieve by just changing the time scale of the current trajectory. Evaluating these formulae over multiple candidate paths give a good characterization of the complete solution space
+
+ 
+
+%
+%The advantage of our approach lies in its ability to accommodate non-holonomic, dynamic and curvature bound constraints and produce locally optimal collision free trajectories. The proposed motion planner is based on the concept of velocity obstacle/collision cone which defines the space of collision free velocities available to each robot at any given instant.
+%
+%The primary contribution of the proposed work lies in reformulating collision cone constraints to efficiently accommodate highly constrained vehicles like fixed wing aerial airplanes. In particular, we 
+
+
+
+
+%We first set up the proposed work by demonstrating that the inclusion of hard curvature constraints destroys the problem structure which the current existing works based on velocity obstacle/collision cone exploit to compute in near real time, locally optimal collision free velocities. We then propose a novel approach for characterizing space of collision free velocities and subsequently choosing a locally optimal velocity from it. The foundation of the approach is built upon our recently developed  concept of \emph{time scaled collision cone} which provides closed form formulae for characterizing collision free velocities that the robot can achieve by just changing the time scale of the current trajectory. Evaluating these formulae over multiple candidate paths give a good characterization of the complete solution space. Thus, the problem of computing a locally optimal collision free velocity can be reduced to a hierarchical optimization of computing an optimal path and an optimal time scale for it. We show that both the layers of hierarchical optimization can be computed efficiently in centralized manner for tens of robots. We validate our formulation on benchmark test  cases from air traffic conflict resolution and autonomous intersection management.
+%
+
+
+%Navigating multiple non-holonomic robots betweeen given start and goal positions is a challenging problem because it involves computing at each instant, the space of collision free velocities which are defined by a set of non-convex inequalities. Moreover, inclusion of hard curvature constraint further increases the complexity of the problem, as it destroys the problem structure which the exisiting works exploit to compute in near real time, locally optimal collision free velocities. To over come these bottlenecks, in this paper, we propose a novel approach for characterizing space of collision free velocities and subsequently choosing a locally optimal velocity from it. The crux of the proposed approach is built upon our recently developed  concept of \emph{time scaled collision cone} which provides closed form formulae for characterizing collision free velocities that the robot can achieve by just changing the time scale of the current trajectory. Evaluating these formulae over multiple candidate paths give a good characterization of the complete solution space. Thus, the problem of computing a locally optimal collision free velocity can be reduced to a hierarichal optimization of computing an optimal path and an optimal time scale for it. We show that both the layers of heirarichal optimization can be computed efficiently in centralized manner for tens of robots. We validate our formulation on test cases from air traffic conflict resolution and autonomous intersection management. 
+\end{abstract}
+
+\section{Introduction}
+
+
+Conflict resolution is one of the most important aspect of the air traffic management. Currently, most deconflicting maneuvers are computed manually by on-ground ATC operators. However, with increase in traffic, this has lead to significant increase in the cognitive load of the operators. Thus, there is a strong need for the development of computationally efficient conflict resolution frameworks. To this end, multi-robot motion planning research of the robotics and aerospace communities can provide a good platform for the development of such frameworks. We are particularly inspired by the concept of Velocity Obstacle (\textbf{VO}) \cite{vo} and Collision Cone  (\textbf{CC}) \cite{ghose} which are equivalent concepts developed independently in the robotics and aerospace community. Both \textbf{VO} and \textbf{CC} define a set of constraints, the solution space of which characterizes the collision free velocities available to a robot at a given instant. This seminal idea has been elegantly exploited in works like \cite{rvo}, \cite{avo} \cite{orca}, \cite{alonzo1}, \cite{joint_util}, \cite{motion_cont}, to solve difficult benchmark problems in multi robot navigation. 
+
+
+%success of two such concepts developed in the robotics community called velocity obstacle and collision cone \cite{vo_shiller}, \cite{ghose}. Both are equivalent concepts which have shown shown remarkable success in solving difficult  benchmark multi robot navigation problems \cite{rvo}, \cite{avo} \cite{orca}, \cite{alonzo1}, \cite{joint_util}, \cite{motion_cont}. These cited works incrementally construct trajectories for multiple robots between a given start and a goal positions.
+
+One of the most critical and difficult aspect of the \textbf{VO} or \textbf{CC} based algorithms is computing the solution space of the collision avoidance constraints. To be precise, the collision avoidance constraints defined by \textbf{VO} or \textbf{CC} are non-convex quadratic inequalities, which in general are computationally intractable \cite{qcqp}. Furthermore, to ensure that computed collision free velocities are physically realizable on the robot, one needs to compute the intersection space of these quadratic inequalities with the robot kino-dynamics, state and control bound constraints.  Computing this intersection space for  fixed wing aerial vehicles which have non-linear kinematics, curvature bounds besides velocity and acceleration bounds is in fact a very challenging problem. 
+
+In this paper, we present a novel approach for characterizing the intersection space of robot kinodynamics, state, control bounds and collision avoidance constraints. At the crux of the proposed methodology is the insight that the solution space of differential inequality constraints can be decomposed into a path component and a motion component. This insight has been used in several works on kino-dynamic motion planning including our previous works on dynamic collision avoidance \cite{cuong_topp}, \cite{cuong_avp} \cite{iros12}, \cite{cdc13}, \cite{iros14}, \cite{iros15}. To dwell further into this idea, consider figure \ref{2rob_coll} which concerns with collision avoidance between two robots. Let us, start by generating two kinematically  feasible trajectories, $X_1(t)$ and $X_2(t)$ without considering any collision avoidance constraints or even velocity and acceleration bounds. This is a very simple step and can be accomplished by numerous methods e.g through a steering function \cite{steering} or by using a parametric trajectory generator which involves solving a set of linear equations \cite{iros14}. Now, it is possible to manipulate just the time scale of the trajectories $X_1(t)$ and $X_2(t)$ (while satisfying velocity and acceleration bounds) to ensure that both the robots do not collide within a particular time horizon. To put in simpler terms, we can keep the path of both the robots intact and just change the motion along the path (e.g speed up one robot and slow down the other) to guarantee collision avoidance between the robots within some future time horizon. Obviously, the kind of manipulation required in the time scale would depend on the initial trajectories itself. For example, in figure \ref{2rob_coll}, the time scale changes required along $X_1(t)$ would be different than that required along $X^{'}_1(t)$.
+
+
+In our previous works \cite{cdc13}, \cite{iros14}, \cite{iros15}, we have introduced a concept called \emph{time scaled collision cone}, which is a decomposition of \textbf{VO} or \textbf{CC} based constraints along a given path. Mathematically, it reduces to a  set of inequalities which define how much and in what manner, the time scale of a trajectory needs to be changed to avoid a given set of dynamic obstacles. Importantly, these inequalities can be solved in closed form to obtain a set of formulae which can then be evaluated along multiple candidate paths to obtain a complete characterization of the robot kinodynamics and dynamic collision avoidance constraints. This abstraction allows us to view problem of  multi robot collision avoidance and consequently air traffic conflict resolution as choosing an appropriate path and its corresponding time scale for each robot.
+
+
+In the current proposed work, we extend the concept of \emph{time scaled collision cone} from a "single robot-multiple non responsive dynamic obstacle" case to the domain of multiple decision making robots by formulating it  over joint state space of all the robots. We show that for many relative configurations of the robots, the joint \emph{time scaled collision cone} constraints have a natural decomposition to linear inequalities. For the rest of the configurations, we exploit the inherent structures in \emph{time scaled collision cone} constraints to  derive a novel convexification scheme which again reduces  the constraints to a set of linear inequalities. This in turn ensures that the  joint optimization for computing optimal time scales for each robot's trajectories remains computationally efficient  even for large number of  robots. Finally, as stated earlier, the change required in time scale depends on the geometry of the path in consideration. Thus, we propose some heuristics for selecting paths along which \emph{time scaled collision cone}  constraints have good solution space. The proposed formulation is validated on practical air traffic conflict scenarios.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%Coordinating the motions of multiple robots between given start and goal positions is a fundamental problem associated with all multi robot applications. It can be conveniently framed as a sequential optimization problem where each robot repeatedly computes a locally optimal collision free trajectory over a short time horizon. The main complexity of the optimization stems from the non-convexity associated with intersection space of the robot kinematics and the dynamic collision avoidance requirement modeled through velocity obstacle/collision cone constraints \cite{vo}, \cite{ghose} constraints. It has been shown that for a robot with linear dynamics and with velocity as control inputs, this non-convex space can be easily approximated with linear hyperplanes \cite{vo}, \cite{rvo}. Although, these approximation only unearths a subset of the entire space of collision free velocities,  it has shown to be effective in solving difficult benchmark problems. Further, it also leads to near real time computation even in centralized setting \cite{joint_utility}.
+%
+%The linear hyperplane approximation discussed above, however, does not naturally hold for robots with  non-linear kinematics  but can still be arrived at by resorting to additional layers of approximations at the expense of unearthing a further reduced space of collision free velocities. To understand this better, consider works like \cite{borca}, \cite{alonzo_diff} which are built on the idea that that a non-holonomic robot would exhibit a finite tracking error while tracking a holonomic trajectory. Moreover, these tracking errors can be modeled as a function of the current state and the commanded holonomic velocities. In other words, this abstraction essentially signifies that for a given tracking error, it is possible to define a space of allowed holonomic velocities. Thus, \cite{borca}, \cite{alonzo_diff} works proceeds by first  enlarging the radius of the robot by the tracking error that would be observed while simultaneously constraining the collision free velocity to lie within a specified set of holonomic velocities. This last step of constraining the collision free velocity is the key and it involves computing the intersection of a linear hyperplane discussed earlier with a non-convex set of allowable holonomic velocities. The resultant can again be a linear hyperplane if it is possible to formulate a convex restriction of the non-convex set.
+%
+%
+%An alternative methodology has been proposed in \cite{GVO} where the intersection space of robot kinematics and collision avoidance constraints is computed by exhaustive control sampling. Various heuristics and off line pre-computations are exploited to make the the process computationally efficient. It is clear the effectiveness of this approach depends on the number of control samples which in turn depends on the resolution of discretization. However, it is worth pointing out that the computational efficiency and the resolution of discretization are conflicting criteria in this methodology.
+%
+%In this paper, we present a novel approach for characterizing the intersection space of robot kinematics and collision avoidance constraints and consequently space of collision free velocities, which does not require enlarging the radius of the robot or exhaustive control sampling. At the crux of the proposed methodology is the insight that the solution space of differential constraints can be decomposed into a path component and a motion component. This insight has been used in several works on kino-dynamic motion planning including our previous works on dynamic collision avoidance \cite{cuong_topp}, \cite{cuong_avp} \cite{iros12}, \cite{cdc13}, \cite{iros14}, \cite{iros15}. To dwell further into this idea, consider figure \ref{2rob_coll} which concerns with coordination between two robots. Let us, start by generating two kinematically  feasible trajectories, $X_1(t)$ and $X_2(t)$ without considering any collision avoidance constraints or even velocity and acceleration bounds. This is a very simple step and can be accomplished by numerous methods e.g through a steering function \cite{steering} or by using a parametric trajectory generator which involves solving a set of linear equations \cite{iros14}. Now, it is possible to manipulate just the time scale of the trajectories $X_1(t)$ and $X_2(t)$ (while satisfying velocity and acceleration bounds) to ensure that both the robots do not collide within a particular time horizon. To put in simpler terms, we can keep the path of both the robots intact and just change the motion along the path (e.g speed up one robot and slow down the other) to guarantee collision avoidance between the robots within some future time horizon. Obviously, the kind of manipulation required in the time scale would depend on the initial trajectories itself. For example, in figure \ref{2rob_coll}, the time scale changes required along $X_1(t)$ would be different than that required along $X^{'}_1(t)$.
+%
+%In our previous works \cite{cdc13}, \cite{iros14}, \cite{iros15}, we have introduced a concept called \emph{time scaled collision cone} which are set of inequalities which define how much and in what manner, the time scale of a trajectory needs to be changed to avoid a given set of dynamic obstacles. Importantly, these inequalities can be solved in closed form to obtain a set of formulae which can then be evaluated along multiple candidate paths to obtain a complete characterization of the robot kinematics and dynamic collision avoidance constraints. This abstraction allows us to view multi robot coordination problem as choosing an appropriate path and its corresponding time scale for each robot.
+%
+%
+%In the current work, we extend the concept of \emph{time scaled collision cone} from a "single robot-multiple non responsive dynamic obstacle" case to the domain of mutiple decision making robots by formulating it  over joint state space of all the robots. We show that for many relative configurations of the robots, the joint \emph{time scaled collision cone} constraints have a natural decomposition to linear inequalities. For the rest of the configurations, we present a series of convexification schemes which again reduces  it to a set of linear inequalities. This in turn ensures that the local optimization for computing optimal time scales scales efficiently with the number of robots. Finally, since stated earlier, the change required in time scale depends on the geometry of the path in consideration, we propose a path optimization framework which computes such path along which the \emph{time scaled collision cone}  constraints have good solution space.
+
+
+
+%We show that this extension incurs minimal computational overhead and the attractive aspects of previous formulation like closed form solvability remains intact in the new variant as well. Moreover, since as stated earlier, the change required in time scale depends on the initial trajectory itself, we  propose a path optimization framework based on maximizing the line of sight rotation between the robots. We show that the optimization results in such paths along which \emph{time scaled collision cone} has "good" solution space, with the term "good" being explained later on in the paper in the context of some specific examples. We validate our mathematical formulations on bench mark cases from aircraft conflict resolution and autonomous intersection management. 
+
+The rest of the paper is organized as follows.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width= 8.7cm, height=8.9cm] {2rob_coll.eps}
+\label{2rob_coll}
+\caption{Illustration of how solution space of differential constraints like dynamic collision avoidance can be decomposed into a path component and a motion component. Let us start by generating two kinematically feasible trajectories $X_1(t)$ and $X_2(t)$ without imposing any collision avoidance or velocity and acceleration bounds. Now, it is possible to ensure collision avoidance between the two robots within a particular time horizon by just changing the time scale of the two trajectories. Obviously, the kind of changes in the time scale required would depend on the initial trajectory itself. }
+\end{figure}
+
+
+
+
+
+
+%however does not hold for  robots with non-linear kinematics. For these kind of robots, the intersection space can be approximated by the techniques proposed in works like \cite{borca}, \cite{alonzo_diff}, which try to preserve as much as possible of the hyperplane approximation discussed above. These techniques are built on the idea that a non-holonomic robot would exhibit a finite tracking error while tracking a holonomic trajectory. Moreover, these tracking errors can be modeled as a function of the current state and the commanded holonomic velocities. In other words, it means that for a given tracking error, it is possible to define a space of allowed holonomic velocities. Thus, \cite{borca}, \cite{alonzo_diff} works proceeds by first  enlarging the radius of the robot by a predefined amount representing the  tracking error that would be observed while simultaneously constraining the collision free velocity to lie within the corresponding set of holonomic velocities. This last step of constraining the collision free velocity is the key and it involves computing the intersection of an hyperplane discussed earlier with a non-convex set of allowable holonomic velocities. 
+
+
+%
+%Conflict resolution is one of the most important aspect of the air traffic management. Currently, most deconflicting maneuvers are computed manually by on-ground ATC operators. However, with increase in traffic, this has lead to significant increase in the cognitive load of the operators. Thus, there is a strong need for the development of computationally efficient conflict resolution frameworks. To this end, multi-robot motion planning research of the robotics and aerospace communities can provide a good platform for the development of such frameworks. We are particularly inspired by the success of one such concept developed in the robotics community called velocity obstacle/collision cone \cite{vo_shiller}, \cite{ghose}, which has shown remarkable success in solving difficult  benchmark multi robot navigation problems \cite{rvo}, \cite{avo} \cite{orca}, \cite{alonzo1}, \cite{joint_util}, \cite{motion_cont} 
+%
+%Velocity obstacle/collision cone defines a set of constraints whose solution  space characterizes the collision free velocities available to each robot at a particular instant. Thus, multi-robot navigation problem can be reduced to iteratively choosing a locally optimal collision free velocity from the solution space at each instant. \cite{orca}, \cite{joint_util}. For robots with linear dynamics and velocity as control input, the velocity obstacle/collision cone constraints can be approximated by linear hyperplanes and thus the optimization assumes the computationally efficient form of a linear programming \cite{orca} or quadratic programming \cite{joint_util}, depending upon the kind of cost functions employed.
+%
+%In spite of the success of the above cited works in multi robot navigation, they possess some limitations which hinders their direct applicability to navigation of multiple fixed wing aerial vehicles. We postpone a detail explanation of these limitations till later on in the paper.  But to give a brief preview here, the computational efficiency of the current velocity obstacle/collision cone based frameworks does not translate well to systems with non-linear kinematics with hard state and actuator constraints. In particular, it becomes difficult to arrive at the linear hyper plane approximation for the velocity obstacle constraints.
+%
+%In this paper, we look at how velocity obstacle/collision cone concept can be modified to efficiently accommodate severely constrained non-holonomic systems like fixed wing aerial vehicles. To this end, we propose a novel approach for characterizing the solution space of collision free velocities and subsequently choosing a locally optimal velocity from it. The foundation of the proposed framework lies on a recently proposed concept called \emph{time scalled collision cone} \cite{cdc13}, \cite{iros14}, \cite{iros15}
+% which are set of constraints which define the space of collision free velocities that the robot can achieve by just changing the time scale of the current trajectory. Importantly, these constraints can be solved in closed form to obtain a set of formulae which can then be evaluated over multiple candidate paths to obtain the complete characterization of the  space of collision free velocities.  Thus, the problem of computing locally optimal collision free velocities can be reduced to a hierarchical optimization of computing an optimal path and an optimal time scale for it.
+% 
+% 
+%It is clear that the solution of top layer of the hierarchical optimization should compliment that of the lower layer. In other words, path optimization should  result in such paths along which \emph{time scaled collision cone} constraints has "good" solution space. To this end, we look at works like \cite{joel_acc}, \cite{los_cdc} which ensures collision avoidance between multiple aerial vehicles by increasing the rotation of their mutual \emph{line of sight}. As shown in these cited works, increasing the rate of rotation of LOS pulls the vehicle out of collision course or in other words leads to satisfaction of collision cone constraints. 
+%
+
+
+%It has been shown in these works that increasing the rotation of LOS indeeds take the aerial vehicles out of their mutual collision course or in other words leads to the satisfaction of collision cone constraints. We thus, build on top of them and propose a path optimization framework defined in terms of maximization of rotation of LOS.
+
+%Besides, the above described novelties, the proposed work makes a few other key contributions, which can be summarized as follows. Firstly, the concept of \emph{time scaled collision cone} originally designed for the case of single robot-multiple non-responsive dynamic obstacles, is extended to the domain of multiple decision making entities. Importantly, we show that this transition incurs minimal additional computational overhead.  
+
+\section{Related Work}
+In this work, we contrast our proposed formulations with the current existing works divided int
+
+
+\section{Symbols and Notations}
+We use upper case italics with appropriate subscripts to denote vectors for each robot, while small case italics with italics are used to denote the component of the vectors. For example, the position vector of a robot $i$ robot at a particular  would be represented as $X_i=(x_i, y_i)^T$, while the control input acting on it would be denoted as $U_i$. We denote the time derivatives of the variables of the $i^{th}$ robot as $\dot{x}_i, \dot{y}_i $ etc. Matrices would be represented as bold faced upper case letters. For the sake of simplicity, we do not explicitly show the time dependency of the variables. Thus, unless stated otherwise, a variable should be understood to be dependent on time. A time independent constant would be defined explicitly at the first place of its use.
+
+
+  
+
+
+\section{Problem Formulation and Review of \textbf{VO} and \textbf{CC} based approaches}
+
+In this section, we briefly define the problem of multi-robot collision avoidance and review the challenges of the existing \textbf{VO} and \textbf{CC} based approaches. Let us start by considering $n$ robots, whose respective 2D position at any time instant be represented as $X_i(t) = (x(t), y(t))^T$. Let the control input acting on the $i^{th}$ robot at time $t$ be represented as $U_i(t)$ while the velocity vector of the $i^{th}$ robot would be defined as $V_i = (\dot{x}_i, \dot{y}_i)^T$. We assume a protective circular area of radius $R_i$ for the $i^{th}$ robot. The multi-robot collision avoidance will be performed with respect to these circular disks. 
+
+With these notations in place,  the task of local multi robot collision avoidance along the lines \cite{rvo}, \cite{avo} \cite{orca}, \cite{alonzo1}, \cite{joint_util}, \cite{motion_cont} can be formulated  in terms of computing a (locally) optimal, kindo-dynamically feasible, collision free trajectory from time instant $t_0$ representing first detection of conflict to a short future horizon $t_c$. This amounts to solving the following optimization problem.
+
+
+\begin{eqnarray}
+\arg\min_{U_i} J =  \sum_{i=1}^{i=n}\Vert V_i-V_i^{pref}\Vert^2 \label{cost}\\ 
+ {X}_i = f(X_i, U_i)\label{kinem}\\
+C_i(X,\dot{X})\leq 0\label{statebound}\\
+U_i^{min}\leq U_i\leq U_{i}^{max}\label{contbound}\\
+C_{ij}^{coll}(X_i, \dot{X}_i, X_j, \dot{X}_j)\geq 0, i\neq j, \forall i,j={1,2,3..n} \label{collavoid}
+\end{eqnarray}
+
+
+
+%
+%
+%
+%\begin{eqnarray}
+%\arg\min_{U_i} J =  \sum_{i=1}^{i=n}(v_i-v_i^{pref})^2 \label{cost}\\ 
+% {X}_i = f(X_i, U_i)\label{kinem}\\
+%\vert \frac{v}{\dot{\theta}}\vert \leq \Gamma  \label{curve}\\
+%v_i^{min}\leq v_i\leq v_i^{max}  \label{velbound}\\
+%\dot{v}_i^{min}\leq U_i^v\leq \dot{v}_i^{max} \label{veldotbound}\\
+%\dot{\theta_i}^{min}\leq U_i^{\theta}\leq \dot{\theta_i}^{max}\label{thetadotbound}\\
+%C_{ij}^{coll}(x_i,y_i,\dot{x_i},x_j,y_j,\dot{x_j})\geq 0, i\neq j, \forall i,j={1,2,3..n} \label{collavoid}
+%\end{eqnarray}
+
+%
+%\dot{x}_i = v_i\cos\theta_i, \dot{y}_i=v_i\sin\theta_i, U_i = (U_i^v, U_i^\theta) = (\dot{v}_i, \dot{\theta}_i)
+
+
+The cost function (\ref{cost}) represents a penalty which seeks to minimize the deviation of each robot's total velocity $v_i$ with its preferred velocity  $v_i^{pref}$ which, in practice,  is either as the current velocity of the robot or a velocity which takes the robot towards its goal \cite{avo}, \cite{motion_cont}. The equality (\ref{kinem}) represents the evolution model of each robot. The inequalities (\ref{statebound}) and (\ref{contbound}) represents the state dependent constraints and control bounds respectively. A typical state dependent constraints commonly enforced are the velocity bounds. 
+
+
+Inequalities (\ref{collavoid}) represents the dynamic collision avoidance constraints between each pair of robots. As shown, the constraints depend on the position variables and their time derivatives for each pair of robots and thus the inequalities (\ref{collavoid}) varies with time. However, in practice, (\ref{collavoid}) is enforced only at the end of time horizon $t_c$. This off course is done with the implicit assumption that the time interval $(t_0-t_c)$ is small.
+
+
+The exact algebraic form of $C_{ij}^{coll}(.)$ derived from the concept of Velocity obstacle (\textbf{VO}) or Collision Cone (\textbf{CO}) can be represented in the following manner
+
+\begin{eqnarray}
+(x_i-x_j)^2+(y_i-y_j)^2-R_{ij}^2\label{collcone}\\\nonumber
+-\frac{(\dot{x}_i-\dot{x_j})^2(x_i-x_j)+(\dot{y}_i-\dot{y_j})^2(y_i-y_j)}{(\dot{x}_i-\dot{x}_j)^2+(\dot{y}_i-\dot{y}_j)^2} \geq 0.
+\end{eqnarray}
+
+where 
+
+\begin{equation}
+R_{ij} = R_i+R_j
+\end{equation}
+
+The main challenge in solving optimization (\ref{cost})-(\ref{collavoid}) lies in computing the intersection space of constraints (\ref{kinem})-(\ref{collavoid}) with $C_{ij}^{coll}(.)$ given by (\ref{collcone}). In the next subsequent sections, we review the complexity of this problem for two kinds of robots. We start with robots with double integrator evolution model followed by robots with non-holonomic kinematics and curvature bounds. Further, we also review the current solution methodologies.
+
+
+ 
+
+\subsection{Non-Holonomic Kinematics with Curvature bounds}
+
+Let each robot be modeled as the following non-holonomic systems with acceleration as control inputs
+
+
+\begin{equation}
+\dot{X}_i = f(X_i,U_i)= \left\{
+                \begin{array}{ll}
+                  \dot{x}_i = \Vert V_i\Vert \cos\theta_i, \dot{y}_i=\Vert V_i\Vert\sin\theta_i\\
+                   U_i = (U_i^v, U_i^\theta) = (\dot{V}_i, \dot{\theta}_i)
+                \end{array}
+              \right.,
+\label{evolnonhol}              
+\end{equation}
+
+where $\Vert V_i\Vert = \sqrt{(\dot{x}_i^2+\dot{y}_i^2)}$ and $\theta_i$ represents the total velocity and heading angle of the $i^{th}$ robot. The state dependent constraints are modeled as velocity and curvature bounds represented by the following inequalities.
+
+\begin{equation}
+C(X_i,\dot{X}_i)\leq 0 : \left\{
+                \begin{array}{ll}
+                  v_i^{min}\leq \Vert {V}_i \Vert \leq v_i^{max}\\
+                  \Vert V_i\Vert+\tau_{min}\dot{\theta}\leq 0, -\Vert V_i\Vert+\tau_{min}\dot{\theta}\leq 0
+                \end{array}
+              \right.
+\label{stateboundnonho}              
+\end{equation}
+
+
+In (\ref{stateboundnonho}), $v_i^{min}$ and $v_i^{max}$ represents the maximum and minimum velocity bounds for the $i^{th}$ robot. For the sake of simplicity we take these bounds to be time independent constants. Further, we assume  non-zero minimum bounds i.e. $v_i^{min}>0$
+
+
+
+Similarly, the control bounds can be represented by the following inequalities
+
+
+%Since velocity itself is considered as the control input, we for now, neglect the state bounds (\ref{statebound}) and represent the control bounds as the following inequalities.
+
+\small
+\begin{equation}
+U_i^{min}\leq{U}_i\leq U_i^{max} : \left\{
+                \begin{array}{ll}
+                  (u_i^x)_{min}\leq{u}_i^x\leq(u_i^x)_{max}\\
+                  (u_i^y)_{min}\leq{u}_i^y\leq(u_i^y)_{max}
+                \end{array}
+              \right.
+\label{singlelincont}              
+\end{equation}
+\normalsize
+
+Now, it is clear that computing the intersection space of (\ref{singlelin}), (\ref{singlelincont}) with the collision avoidance constraints would require solving non-convex quadratic and linear inequalities in terms of velocity control inputs $u_i^x, u_i^y$. This in general is computationally intractable \cite{boyd}. Thus, works like \cite{orca} and \cite{joint_util} compute a convex approximations
+
+
+
+%The first term in the cost function (\ref{cost}) is a terminal penalty term which instigates each robot to be as close as possible to their final position $X_i^f$ at the end of the time horizon $t_c$. The second term penalizes each robot for deviating from their  preferred velocity $v_i^{pref}$. The equality (\ref{kinem}) represents the evolution model of each robot. As can be seen, it is a typical non-holonomic evolution model where $v_i$ and $\theta_i$ stands for longitudinal velocity and heading angle of each robot. The control inputs for the evolution model are the longitudinal acceleration $\dot{v_i}$ and the angular velocity of each robot $\dot{\theta}$. Inequalities (\ref{curve}) and (\ref{velbound}) are state constraints representing curvature and velocity bounds respectively.  The control bounds are represented in (\ref{veldotbound}) and (\ref{thetadotbound}) . Inequalities (\ref{collavoid}) represents the dynamic collision avoidance constraints between each pair of robots.
+%
+%\subsection{Overview of the Solution Methodology}
+%The basic idea behind the proposed solution methodology is simple. We decompose the optimization (\ref{cost})-(\ref{collavoid}) into  two hierarchal optimizations where we first compute an optimal path followed by computation of optimal motion profiles along it. Mathematically, these can be represented by the following two optimizations. 
+%
+%\small
+%\begin{eqnarray}
+%\arg\min_{X_i(t)} J_1 = \sum_{i=1}^{i=n} \Vert X_i(t_c)-X_i^f \Vert^2  \label{heir1cost}\\\nonumber - \sum_{i} \sum_{j} C_{ij}^{coll}(x_i,y_i,\dot{x_i},x_j,y_j,\dot{x_j})\\ \nonumber
+%\dot{x}_i = v_i\cos\theta_i, \dot{y}_i=v_i\sin\theta_i, U_i = (U_i^v, U_i^\theta) = (\dot{v}_i, \dot{\theta}_i)\\\nonumber
+%\vert \frac{v}{\dot{\theta}}\vert \leq \Gamma  \label{curve}\\
+%\end{eqnarray}
+%\normalsize
+%
+%
+%
+%\begin{eqnarray}
+%\arg\min_{U_i(t)} J = \sum_{i=1}^{i=n} \int_{t=t_0}^{t=t_f} (^{X_i}v_i-v_i^{pref})^2 \label{heir2cost}\\ \nonumber
+%v_i^{min}\leq ^{X_i}v_i\leq v_i^{max} \\\nonumber
+%\dot{v}_i^{min}\leq ^{X_i}U_i^v \leq \dot{v}_i^{max}\\\nonumber
+%\dot{\theta_i}^{min}\leq ^{X_i}U_i^{\theta}\leq \dot{\theta_i}^{max}\\\nonumber
+%^{X_i}C_{ij}^{coll}(x_i,y_i,\dot{x_i},x_j,y_j,\dot{x_j})\geq 0, i\neq j, \forall i,j={1,2,3..n}
+%\end{eqnarray}
+%
+%The output of optimization (\ref{heir1cost}) are the paths of each robot $X_i(t)$ which are as close a 
+%
+%
+%Optimization (\ref{heir2cost}) computes control inputs $U_i$ which will make the robots move along the path $X_i(t)$ while minimizing the cost function and satisfying velocity, acceleration bounds and collision avoidance constraints.
+
+
+
+
+
+
+
+
+%
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width= 8.7cm, height=8.9cm] {flowchart_multirob.eps}
+%\label{2rob_coll}
+%\caption{ }
+%\end{figure}
+
+
+
+
+%\ddot{\theta_i}^{min}\leq U_i^{\theta}\leq \ddot{\theta_i}^{max}\\
+
+
+
+
+
+
+
+
+%
+%Let us consider $n$  robots, whose respective configuration in 2D at any time instant $t$ be represented by tuple $X_i(t) = (x_i(t),y_i(t),\theta(t))$. The evolution model of the $i^{th}$ robot is given by the following non-holonomic kinematics,  which as shown in \cite{ghose}, \cite{bichi} are sufficient to model planar motions of fixed wing aerial vehicles.
+%
+%
+%\begin{equation}
+%\dot{x}_i = v_i\cos\theta_i, \dot{y}_i=v_i\sin\theta_i, U_i^v =\dot{v}, U_i^\theta =\ddot{\theta}
+%\label{kinem} 
+%\end{equation}
+%
+%In (\ref{kinem}), $x,y$ represents the position of the robot in the fixed global frame, while $\theta$ represents its orientation. The variable $v$ represents the total velocity in the robot reference frame, while $U_i^v$ and $U_i^\theta$ represents the control input. As shown, in figure \ref{}, we assume a protective circular area of radius $R_i$ around each respective robot. The multi robot motion planning is performed with respect to these circular disk.
+%
+%With the above notations in place, we define the task of conflict resolution in terms of planning a (locally) optimal, kindo-dynamically feasible, collision free trajectory from time instant $t_0$ of first detection of conflict to some future time horizon $t_f$. Mathematically, this can be represented by the following optimal control problem with state and control  constraints. 
+
+
+
+%\begin{eqnarray}
+%\arg\min_{U_i} J = \sum_{i=1}^{i=n} \phi_i(X_i(t_f))+\int_{t=t_0}^{t=t_f} f_i^{U}(U_i)+f_i^{X_i}(X_i)\\\nonumber
+%\dot{x}_i = v_i\cos\theta_i, \dot{y}_i=v_i\sin\theta_i \\\nonumber
+%\vert \frac{v}{\dot{\theta}}\vert \leq \Gamma\\\nonumber
+%v_i^{min}\leq v_i\leq v_i^{max}\\\nonumber
+%\dot{v}_i^{min}\leq U_i^v\leq \dot{v}_i^{max}\\\nonumber
+%\ddot{\theta_i}^{min}\leq U_i^{\theta}\leq \ddot{\theta_i}^{max}\\\nonumber
+%C_{ij}^{coll}(x_i,y_i,\dot{x_i},x_j,y_j,\dot{x_j})\geq 0, i\neq j, \forall i,j={1,2,3..n}
+%\end{eqnarray}
+%
+%
+
+
+
+
+
+%Let us consider $n$ disk shaped robots whose configuration in 2D at any time instant $t$ be represented as $X_i(t)$. Let, the control input acting on the robot at time $t$ be represented as $U_i(t)$. Now, it is possible to represent the task of navigating $n$ robots between given start $(X_i^0)$ and goal positions $(X_i^f)$  as the following discrete time optimal control problem with the state and control dependent quadratic costs.
+%
+%\begin{eqnarray}
+%\arg\min_{U_i} J = \sum_{i=1}^{i=n}\sum_{t=t_0}^{t=t_f} U_i(t)^TRU_i(t)+X_i(t)^TQX_i(t)\\\nonumber
+%X_i(t_0) = X_i^0, X_i(t_f) = X_i^f \\\nonumber
+%\dot{X_i} = F(X_i,U_i)\\\nonumber
+%C_{avoid}(X_i,\dot{X_i},X_j,\dot{X_j})\geq 0, i\neq j, \forall i,j={1,2,3..n}
+%\end{eqnarray}
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
